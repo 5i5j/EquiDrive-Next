@@ -1,0 +1,8 @@
+[core]
+    remote = local_minio
+['remote "local_minio"']
+    url = s3://equidrive-ml
+    endpointurl = http://localhost:9000
+    access_key_id = admin
+    secret_access_key = password123
+    region = eu-west-1
