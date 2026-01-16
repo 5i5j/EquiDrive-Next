@@ -1,6 +1,6 @@
 outs:
-- md5: 11770488289bedb078e36b3fb1da2ca9.dir
-  size: 18828000
-  nfiles: 6000
+- md5: a417e9fc064720c1b3a308a340df0251.dir
+  size: 94140000
+  nfiles: 30000
   hash: md5
   path: silver_v3

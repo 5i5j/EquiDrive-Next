@@ -9,7 +9,7 @@ from src.utils.map_geometry_v3 import extract_v3_features
 # --- 配置参数 ---
 INPUT_DIR = Path("data/landing/train")
 OUTPUT_DIR = Path("data/silver_v3")
-QUOTA_PER_CLASS = 2000  # 每类采集2000个，总计6000个
+QUOTA_PER_CLASS = 10000  # 每类采集2000个，总计6000个
 MAX_WORKERS = os.cpu_count() // 2  # 使用一半的核心，留一半陪老大弹琴
 
 def process_single_scene(scene_path):

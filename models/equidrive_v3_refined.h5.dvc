@@ -1,0 +1,5 @@
+outs:
+- md5: 9e47f3a85f7e041ccf11438cec49df6f
+  size: 1495208
+  hash: md5
+  path: equidrive_v3_refined.h5
