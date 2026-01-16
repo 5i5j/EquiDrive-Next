@@ -1,3 +1,14 @@
 venv/
 *.pyc
 .DS_Store
+data/landing/
+data/bronze/
+data/silver/
+data/silver_v1/
+data/silver_v2/
+models/v1_baseline.h5
+models/v2_advanced.h5data/landing/
+data/bronze/
+data/silver_v1/
+data/silver_v2/
+models/*.h5
