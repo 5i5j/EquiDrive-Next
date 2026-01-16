@@ -1,0 +1,17 @@
+stages:
+  extract:
+    cmd: python3 src/data/extractor_v2.py
+    deps:
+      - src/data/extractor_v2.py
+      - data/landing
+    outs:
+      - data/silver_v2
+  train:
+    cmd: python3 src/training/train_v2.py
+    deps:
+      - data/silver_v2
+      - src/training/train_v2.py
+    params:
+      - params.yaml:train_v2
+    outs:
+      - models/v2_advanced.h5

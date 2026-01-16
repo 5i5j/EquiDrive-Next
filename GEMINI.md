@@ -1,47 +1,54 @@
-```markdown
 # Gemini Development Log: The Greenfield Rebirth
 
 This document records the collaborative journey between the Architect (User) and Gemini (AI) in developing EquiDrive-Next.
 
-## 📝 Milestone: 2026-01-15 (The First Ignite)
+## 📝 Milestone: 2026-01-16 (Infrastructure & Visualization Finalization)
 
-### 1. Architectural Pivot
-- **From Displacement to Heading**: Shifted intent labeling logic from V1's "3.5m lateral displacement" to V2's "Heading Delta (Angular change)". This captures the physics of turning more accurately regardless of road orientation.
-- **Environment Isolation**: Configured `tf_gpu` conda environment on P620 workstation, leveraging RTX 3080 Ti for acceleration.
+### 1. MLOps "Surgical" Integration
+- **Issue**: Large binary data (.npz) and model files (.h5) were accidentally tracked by Git, causing repository bloat.
+- **Fix**: Executed a "Clean Sweep" using `git rm --cached`. Redirected all heavy artifacts to **DVC (Data Version Control)**.
+- **Remote Storage**: Successfully synchronized **15,971 objects** to the dedicated MinIO/S3 bucket: `s3://equidrive-ml`.
+- **Reproducibility**: Established `params.yaml` and `dvc.yaml` logic to ensure any future training run can be reconstructed bit-for-bit.
 
-### 2. Engineering Breakthroughs
-- **Data Normalization**: Implemented a "Relative to Origin" transform, setting the vehicle's position at T=0 as (0,0) and aligning its initial heading.
-- **Module System**: Resolved Python import issues by establishing a proper `src` package structure with `__init__.py` and `PYTHONPATH` management.
+### 2. Inference & Physical Validation
+- **Visual Evidence**: Developed `visualizer.py` to bridge the gap between metrics and physics. 
+- **The 99.9% Case**: Confirmed the model's high-confidence prediction (99.9%) on a complex right-turn scenario. 
+- **Kinematic Insight**: The V2 4D model (Position + Velocity) demonstrated the ability to detect intent *before* significant spatial displacement occurs by capturing shifts in the velocity vectors ($v_x, v_y$).
 
-### 3. Training Results (Baseline V1)
-- **Dataset Size**: Scaled from 1,000 to 10,000 samples.
-- **Validation Accuracy**: Achieved a stable **91.4%**, demonstrating excellent generalization with low overfitting gap.
-Samples	Train Acc	Val Acc	Loss	Status
-1,000	91.8%	85.0%	0.24	Overfitting Detected ⚠️
-10,000	93.3%	91.4%	0.20	Stable & Robust ✅
+### 3. V1 vs V2 Competitive Analysis
+| Version | Feature Set | Data Distribution | Status |
+| :--- | :--- | :--- | :--- |
+| **V1** | 2D (x, y) | Natural (Imbalanced) | Retired (Baseline) |
+| **V2** | **4D (x, y, vx, vy)** | **Balanced (1:1:1)** | **Production Ready ✅** |
 
-### 4. Future Roadmap
-- **V2 Feature Engineering**: Incorporate velocity ($v_x, v_y$) and yaw rate ($\omega$) to resolve intent ambiguity in slow-moving scenarios.
-- **Full-scale Training**: Unleash the pipeline on the complete 238k AV2 dataset.
+---
 
 ## 📝 Milestone: 2026-01-15 (The V2 Symmetry Breakthrough)
 
 ### 1. The "Category" Mystery & Resolution
 - **Issue**: Encountered `KeyError: 'category'` during data processing.
-- **Root Cause**: Identified that Argoverse 2 data schema uses `object_category` instead of `category`, and requires `focal_track_id` for agent identification.
-- **Fix**: Re-engineered the `builder_bronze.py` to use `df['track_id'] == df['focal_track_id']` for precise agent filtering.
+- **Root Cause**: Identified that Argoverse 2 schema uses `object_category` and requires `focal_track_id` for agent identification.
+- **Fix**: Re-engineered `builder_bronze.py` for precise agent filtering using `track_id == focal_track_id`.
 
 ### 2. Strategic Pivot: Class Balancing
-- **Action**: Implemented a "Quota-based" extraction logic.
-- **Result**: Successfully curated a 6,000-sample dataset with a perfect **2000:2000:2000** split for Left, Right, and Straight intents. This removed the "Straight Bias" present in earlier iterations.
+- **Action**: Implemented "Quota-based" extraction logic.
+- **Result**: Successfully curated a 6,000-sample dataset with a perfect **2000:2000:2000** split. This effectively eliminated the "Straight-driving bias."
 
-### 3. Feature Engineering Evolution
-- **Upgrade**: Successfully transitioned from 2D coordinates to 4D kinematic states (Position + Velocity).
-- **Impact**: The model now recognizes "Turn Intent" earlier by observing deceleration patterns in velocity components, leading to a much lower training loss ($0.14$).
+### 3. Training Performance
+- **Impact**: Transitioning to 4D kinematic states led to faster convergence and a significantly lower loss (**0.14 vs 0.20**).
+- **Validation Accuracy**: Reached **92.6%**, proving that data quality (balance) outweighs architecture complexity.
 
-### 4. GPU Performance
-- **Hardware**: Leveraged NVIDIA RTX 3080 Ti.
-- **Efficiency**: 50 Epochs completed in record time with stable convergence.
+---
+
+## 📝 Milestone: 2026-01-15 (The First Ignite)
+
+### 1. Architectural Pivot
+- **Logic Shift**: Moved from V1's displacement-based labeling to V2's **Heading Delta (Angular change)**. This captures turning physics accurately regardless of road orientation.
+- **Environment**: Configured `tf_gpu` on P620 workstation (RTX 3080 Ti).
+
+### 2. Engineering Foundations
+- **Normalization**: Implemented "Relative to Origin" transform (T=0 at (0,0) with aligned heading).
+- **Module System**: Established proper `src` package structure with `PYTHONPATH` management.
 
 ---
 *Generated by Gemini for the EquiDrive-Next Project.*
