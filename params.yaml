@@ -1,0 +1,6 @@
+train_v2:
+  epochs: 50
+  batch_size: 32
+  features: ["x", "y", "vx", "vy"]
+  data_split: 0.2
+
